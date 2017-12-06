@@ -5,7 +5,7 @@ import cv2
 from regression import regression
 
 class data_process:
-    def __init__(self, filename, eye_size, regression):
+    def __init__(self, filename, eye_size, regression, size):
         self.reg = regression 
         #true using lasso regresion 
         #false using cnn
@@ -18,7 +18,7 @@ class data_process:
         #for regression the dimension is 5000
         #for cnn the dimension is 100 * 50 * 3 * len
         if not self.reg:
-            self.cnn = np.zeros(2*eye_size, eye_size, 3, self.get_len())
+            self.cnn = np.zeros((2*eye_size, eye_size, 3, size), dtype=np.float )
 
         self.get_data(filename)
         print(self.get_len())
@@ -40,6 +40,7 @@ class data_process:
         roi_color = img[y:y+h, x:x+w]
         
         eyes = eye_cascade.detectMultiScale(roi_gray,1.3,10)
+       
         if len(eyes) != 2: return eye_person
         
         for (ex,ey,ew,eh) in eyes:
@@ -53,10 +54,13 @@ class data_process:
                 eye = roi_color[ex:ex+ew, ey:ey+eh]
                 resize = cv2.resize(eye, (50,50))
                 eye_person.extend(resize)
+        
         if self.reg:
             return eye_person
         else:
-            return np.reshape(eye_person, [eye_size*2, eye_size, 3])
+
+            #return np.reshape(eye_person, [eye_size*2, eye_size, 3])
+            return np.array(eye_person)
 
 
     def get_data(self, filename):
@@ -64,7 +68,9 @@ class data_process:
         lines = f.readlines()
 
         dataFile = "/gazePredictions.csv"
+        count = 0
         for line in lines:
+        
             print (line)
             try:
                 with open(line.strip().replace("\\", "/") + dataFile) as f:
@@ -72,14 +78,16 @@ class data_process:
                     for row in readCSV:
                         
                         frameFilename = row[0]
+                        
                         eye_feature = self.get_per_data(frameFilename)
-                        #print(len(eye_feature))
+                        
                         if len(eye_feature) == 0:
                             continue
                         if self.reg:
                             self.data.append(eye_feature)
                         else:
-                            self.cnn[:,:,:,i] = eye_feature
+                            self.cnn[:,:,:,count] = eye_feature
+                            count += 1
 
                         label = []
                         label.append(float(row[2]))
@@ -97,10 +105,12 @@ class data_process:
        
 if __name__ == '__main__':
 
-    dp_train = data_process("test_1430_1.txt", 50, True)
-    np.save('test_reg_x.npy', dp_train.data)
-    np.save('test_reg_y.npy', dp_train.labels)
+    dp_train = data_process("train_1430_1.txt", 50, False, 44081)
+    np.save('train_cnn_x.npy', dp_train.cnn)
+    # np.save('train_cnn_y.npy', dp_train.labels)
+
+    dp_test = data_process("test_1430_1.txt", 50, False, 13451)
+    np.save('test_cnn_x.npy', dp_test.cnn)
+    # np.save('test_cnn_y.npy', dp_test.labels)
     # dp_test = data_process("test_1430_1.txt", 50, True)
-    # lasso = lasso_regression(dp_train.data, dp_train.labels, dp_test.data, dp_test.labels)
-    # print(lasso.dis_avg())
-    
+  
