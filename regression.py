@@ -50,14 +50,12 @@ if __name__ == '__main__':
     test_X = np.load('test_reg_x.npy')  
     test_y = np.load('test_reg_y.npy')
    
-    # regression = regression(train_X, train_y, test_X, test_y, "lasso") #0.16694475862513625
+    regression = regression(train_X, train_y, test_X, test_y, "lasso") #0.16694475862513625
     # regression = regression(train_X, train_y, test_X, test_y, "lars") #0.16920453630748747
     # regression = regression(train_X, train_y, test_X, test_y, "net") #0.16900103092369337
     # regression = regression(train_X, train_y, test_X, test_y, "ridge") #0.18331017007622946
-
-
-
-    #print(regression.dis_avg())
+    
+    print(regression.dis_avg())
 
 	#train size: 44081
 	#test size : 13451
