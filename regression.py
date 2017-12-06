@@ -63,8 +63,8 @@ if __name__ == '__main__':
 	#test size : 13451
 
 	#method 	dis_avg
-	#WebGazer   0.293238937006042
+	#WebGazer   	0.293238937006042
 	#Lasso 		0.16694475862513625
-	#LassoLars  0.16920453630748747
-	#ElasticNet 0.16900103092369337
+	#LassoLars  	0.16920453630748747
+	#ElasticNet 	0.16900103092369337
 	#Ridge 		0.18331017007622946
