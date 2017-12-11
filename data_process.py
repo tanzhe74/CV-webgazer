@@ -46,12 +46,12 @@ class data_process:
         for (ex,ey,ew,eh) in eyes:
             
             if self.reg:
-                eye = roi_gray[ex:ex+ew, ey:ey+eh]
+                eye = roi_gray[ey:ey+eh, ex:ex+ew]
                 resize = cv2.resize(eye, (50,50))
                 l = [item for sublist in resize for item in sublist]
                 eye_person.extend(l)
             else:
-                eye = roi_color[ex:ex+ew, ey:ey+eh]
+                eye = roi_color[ey:ey+eh, ex:ex+ew]
                 resize = cv2.resize(eye, (50,50))
                 eye_person.extend(resize)
         
